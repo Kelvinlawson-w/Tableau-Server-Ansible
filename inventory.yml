@@ -1,0 +1,7 @@
+[master]
+#ec2-34-219-26-183.us-west-2.compute.amazonaws.com
+ec2-54-184-12-232.us-west-2.compute.amazonaws.com
+
+[worker]
+ec2-34-220-29-112.us-west-2.compute.amazonaws.com
+ec2-35-85-145-211.us-west-2.compute.amazonaws.com
