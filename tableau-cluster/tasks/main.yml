@@ -1,0 +1,10 @@
+---
+# tasks file for tableau-cluster
+- include: nginx.yml
+- include: install-tableau.yml
+
+- include_tasks: worker-node.yml
+  when: 'worker is defined and worker == "true"'
+
+- include_tasks: master-node.yml
+  when: 'master is defined and master == "true"'

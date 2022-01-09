@@ -1,0 +1,2 @@
+- name: run initialize-tsm
+  shell: runuser -l {{ tsm_user }} -c 'sudo $(realpath $(which initialize-tsm)) --accepteula'

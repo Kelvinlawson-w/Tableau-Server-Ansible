@@ -1,0 +1,12 @@
+- name: copy bootstrap file to worker node
+  copy:
+    src: bootstrap.json
+    dest: /opt/tableau/tableau_server/bootstrap.json
+
+- name: run init tsm !!!
+  shell: |
+    set -e
+    runuser -l {{ tsm_user }} -c 'sudo $(realpath $(which initialize-tsm)) -b /opt/tableau/tableau_server/bootstrap.json --accepteula'
+    touch /var/opt/tableau/tableau_server/ansible_tsm_initialized
+  args:
+    creates: /var/opt/tableau/tableau_server/ansible_tsm_initialized

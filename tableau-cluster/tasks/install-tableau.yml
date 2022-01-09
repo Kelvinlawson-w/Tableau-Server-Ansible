@@ -1,0 +1,50 @@
+- name: update and upgrade os
+  shell: apt update; apt upgrade -y
+  
+
+- name: install dependencices
+  apt:
+    pkg:
+      - fontconfig
+      - net-tools
+      - gdb
+      - chrpath
+      - freeglut3
+      - libegl1-mesa
+      - libxcomposite1
+      - libxcursor1
+      - libxi6
+      - libxrandr2
+      - libxrender1
+      - libxtst6
+      - lsb-core
+
+- name: install tableau-server - VERSION {{ tableau_server_version }}
+  apt:
+    deb: https://downloads.tableau.com/esdalt/{{ tableau_server_version }}/tableau-server-{{ tableau_server_version | replace('.','-') }}_amd64.deb
+    state: present
+
+- name: install tableau-server drivers
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ drivers | default([]) }}"
+
+- name: create user {{ tsm_user }}
+  user:
+    name: "{{ tsm_user }}"
+    password: "{{ tsm_password | password_hash('sha512') }}"
+    state: present
+
+- name: allow {{ tsm_user }} group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    regexp: "^%{{ tsm_user }}"
+    line: "%{{ tsm_user }} ALL=(ALL) NOPASSWD: ALL"
+    state: present
+
+- name: create a symbolic link initialize-tsm
+  command:
+    cmd: runuser -l {{ tsm_user }} -c 'sudo ln -svf /opt/tableau/tableau_server/packages/scripts.*/initialize-tsm /usr/local/bin'
+    creates: /usr/local/bin/initialize-tsm
+    warn: false
